@@ -19,7 +19,17 @@ Options:
 
 `-d`, `-dc`, `-o` 这三个参数时必须的.
 
+![image](https://github.com/0x727/UserRegEnum_0x727/blob/master/Pictures/Xnip2023-03-31_12-50-08.png)
+
 结果会保存在当前 `.exe` 同级目录下.
+
+![image](https://github.com/0x727/UserRegEnum_0x727/blob/master/Pictures/Pasted%20image%2020230408204134.png)
+
+如果信息量大的话, 可以通过文本筛选, 条件设置为: 不包含 "NT AUTHORITY" 字段.
+
+![image](https://github.com/0x727/UserRegEnum_0x727/blob/master/Pictures/Pasted%20image%2020230408202607.png)
+
+![image](https://github.com/0x727/UserRegEnum_0x727/blob/master/Pictures/Pasted%20image%2020230408203110.png)
 
 **域内计算机越多, 程序执行时间越长, 目前已知 2w 余台机器的域查询耗时 7 分钟左右.**
 
