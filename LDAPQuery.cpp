@@ -18,12 +18,13 @@ LDAPQuery::~LDAPQuery() {
 // 初始化 LDAP 查询对象
 bool LDAPQuery::Initialize() {
     // 初始化 LDAP 连接
-    //ldap = ldap_initW(const_cast<wchar_t*>(dc.c_str()), LDAP_PORT); // 这样更简洁, 但是进行了类型转换
+    //ldap = ldap_initW(const_cast<wchar_t*>(dc_wstr.c_str()), LDAP_PORT); // 这样更简洁, 但是进行了类型转换
 
     // 动态分配 wchar_t 数组来存储 std::wstring 字符串的宽字符, 这样可以避免使用 const_cast 来去除 const 属性
     wchar_t* dcW = new wchar_t[dc_wstr.length() + 1];
     wcscpy_s(dcW, dc_wstr.length() + 1, dc_wstr.c_str());
     ldap = ldap_initW(dcW, LDAP_PORT);
+    
     // 释放内存
     delete[] dcW;
 
@@ -56,14 +57,18 @@ bool LDAPQuery::Bind() {
 }
 
 
-// 执行 LDAP 查询, 接受三个参数, 分别是 LDAP 目录名称 (dn), 查询过滤器 (filter), 和要返回的属性 (attribute)
+ //执行 LDAP 查询, 接受三个参数, 分别是 LDAP 目录名称 (dn), 查询过滤器 (filter), 和要返回的属性 (attribute)
 //bool LDAPQuery::Search(const std::wstring& dn, const std::wstring& filter, const std::wstring& attribute) {
-//    PWSTR attributes[] = { const_cast<wchar_t*>(attribute.c_str()), nullptr };
+//    std::wcout << dn << std::endl;
+//    //PWSTR attributes[] = { const_cast<wchar_t*>(attribute.c_str()), nullptr };
+//    PWCHAR attributes[] = { (PWCHAR)L"dNSHostName", NULL };
 //    //PWSTR attributes[] = { attribute.data(), nullptr };
 //    PWSTR filterPtr = const_cast<wchar_t*>(filter.c_str());
 //    PWSTR dnPtr = const_cast<wchar_t*>(dn.c_str());
 //
-//    errorCode = ldap_search_sW(ldap, dnPtr, LDAP_SCOPE_SUBTREE, filterPtr, attributes, 0, &searchResult);
+//    //errorCode = ldap_search_sW(ldap, dnPtr, LDAP_SCOPE_SUBTREE, filterPtr, attributes, 0, &searchResult);
+//    errorCode = ldap_search_s(ldap, const_cast<PWCHAR>(dn.c_str()), LDAP_SCOPE_SUBTREE, const_cast<PWCHAR>(filter.c_str()), attributes, 0, &searchResult);
+//    std::wcout << errorCode << std::endl;
 //    if (errorCode != LDAP_SUCCESS) {
 //        std::cerr << "Failed to search LDAP." << std::endl;
 //        ldap_unbind_s(ldap);
@@ -73,7 +78,7 @@ bool LDAPQuery::Bind() {
 //    return true;
 //}
 
-// 执行 LDAP 查询, 接受三个参数, 分别是 LDAP 目录名称 (dn_wstr), 查询过滤器 (filter_wstr), 和要返回的属性 (attribute_wstr)
+ // 执行 LDAP 查询, 接受三个参数, 分别是 LDAP 目录名称 (dn_wstr), 查询过滤器 (filter_wstr), 和要返回的属性 (attribute_wstr)
 bool LDAPQuery::Search(const std::wstring& dn_wstr, const std::wstring& filter_wstr, const std::wstring& attribute_wstr) {
     // 动态分配 wchar_t 数组来存储 std::wstring 字符串的宽字符, 这样可以避免使用 const_cast 来去除 const 属性
     wchar_t* dnPtr = new wchar_t[dn_wstr.length() + 1];
@@ -91,6 +96,7 @@ bool LDAPQuery::Search(const std::wstring& dn_wstr, const std::wstring& filter_w
     // Perform LDAP search
     errorCode = ldap_search_sW(ldap, dnPtr, LDAP_SCOPE_SUBTREE, filterPtr, attributes, 0, &searchResult);
     if (errorCode != LDAP_SUCCESS) {
+        std::wcerr << errorCode << std::endl;
         std::wcerr << L"Failed to search LDAP." << std::endl;
         ldap_unbind_s(ldap);
 

@@ -41,6 +41,7 @@ bool EnumerateUserKeys(HKEY hKeyUsers, const std::wstring& domain_wstr, const st
                 LocalFree(pSid);
             }
             else {
+                //std::wcout << computerName_wstr << std::endl;  //输出测试
                 // 获取操作系统信息
                 std::wstring os_wstr = SearchOperatingSystem(domain_wstr, dc_wstr, computerName_wstr);
                 os_wstr.erase(std::remove(os_wstr.begin(), os_wstr.end(), '\n'), os_wstr.end());
